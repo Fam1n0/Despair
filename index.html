@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+  }
+  #gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-image: url('photo.jpg'); /* Replace with your photo URL */
+    background-size: cover;
+    background-position: center;
+  }
+
+  .person {
+    position: absolute;
+    width: 10px;
+    height: 40px;
+    background-image: url('person.png'); /* Replace with your person photo URL */
+    background-size: cover;
+    background-position: center;
+  }
+
+  .rock {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-image: url('rock.jpg'); /* Replace with your rock photo URL */
+    background-size: cover;
+    background-position: center;
+  }
+
+  #controls {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameContainer"></div>
+
+<div id="controls">
+  <button id="spawnPersonButton">Spawn Person</button>
+  <button id="spawnRockButton">Spawn Rock</button>
+</div>
+
+<script>
+  let personSpawnMode = false;
+  let rockSpawnMode = false;
+
+  document.getElementById('spawnPersonButton').addEventListener('click', () => {
+    personSpawnMode = !personSpawnMode;
+    rockSpawnMode = false;
+  });
+
+  document.getElementById('spawnRockButton').addEventListener('click', () => {
+    rockSpawnMode = !rockSpawnMode;
+    personSpawnMode = false;
+  });
+
+  document.getElementById('gameContainer').addEventListener('click', (event) => {
+    if (personSpawnMode) {
+      const person = document.createElement('div');
+      person.className = 'person';
+      person.style.left = `${event.clientX - 5}px`;
+      person.style.top = `${event.clientY - 20}px`;
+      document.getElementById('gameContainer').appendChild(person);
+      movePerson(person);
+    } else if (rockSpawnMode) {
+      const rock = document.createElement('div');
+      rock.className = 'rock';
+      rock.style.left = `${event.clientX - 15}px`;
+      rock.style.top = `${event.clientY - 15}px`;
+      document.getElementById('gameContainer').appendChild(rock);
+    }
+  });
+
+  function movePerson(person) {
+    setInterval(() => {
+      const direction = Math.random() > 0.5 ? 1 : -1;
+      const currentLeft = parseFloat(person.style.left);
+      const newLeft = currentLeft + (direction * Math.random() * 2);
+      if (newLeft > 0 && newLeft < window.innerWidth - 10) {
+        person.style.left = `${newLeft}px`;
+      }
+
+      // Collision detection with rocks
+      document.querySelectorAll('.rock').forEach(rock => {
+        const rockRect = rock.getBoundingClientRect();
+        const personRect = person.getBoundingClientRect();
+
+        if (
+          rockRect.top < personRect.bottom &&
+          rockRect.bottom > personRect.top &&
+          rockRect.left < personRect.right &&
+          rockRect.right > personRect.left
+        ) {
+          person.remove();
+        }
+      });
+    }, 100);
+  }
+</script>
+
+</body>
+</html>
