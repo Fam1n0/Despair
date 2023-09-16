@@ -28,8 +28,8 @@
 
   .rock {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 50px; /* Adjusted size to be larger */
+    height: 50px; /* Adjusted size to be larger */
     background-image: url('rock.jpg'); /* Replace with your rock photo URL */
     background-size: cover;
     background-position: center;
@@ -76,8 +76,8 @@
     } else if (rockSpawnMode) {
       const rock = document.createElement('div');
       rock.className = 'rock';
-      rock.style.left = `${event.clientX - 15}px`;
-      rock.style.top = `${event.clientY - 15}px`;
+      rock.style.left = `${event.clientX - 25}px`; /* Adjusted the positioning */
+      rock.style.top = `${event.clientY - 25}px`; /* Adjusted the positioning */
       document.getElementById('gameContainer').appendChild(rock);
     }
   });
@@ -102,7 +102,9 @@
           rockRect.left < personRect.right &&
           rockRect.right > personRect.left
         ) {
-          person.remove();
+          person.style.transition = "opacity 2s"; // Adding transition property for fading effect
+          person.style.opacity = 0; // Set opacity to 0 to fade away
+          setTimeout(() => person.remove(), 2000); // Remove the person element after 2 seconds (to allow the fading effect to complete)
         }
       });
     }, 100);
